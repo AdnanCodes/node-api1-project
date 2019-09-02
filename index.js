@@ -34,7 +34,9 @@ server.get("/api/users/:id", (req, res) => {
       }
     })
     .catch(() => {
-      res.status(500).json({ message: `Server had issue sending the info` });
+      res
+        .status(500)
+        .json({ error: "The users information could not be retrieved." });
     });
 });
 
@@ -54,6 +56,27 @@ server.delete("/api/users/:id", (req, res) => {
     .catch(() => {
       res.status(500).json({ message: "Server had an error trying to delete" });
     });
+});
+
+//Post user
+
+server.post("/api/users", (req, res) => {
+  const { name, bio } = req.body;
+
+  if (name || bio) {
+    DataBase.insert(req.body)
+      .then(user => {
+        res.status(201).json(user);
+      })
+      .catch(() => {
+        res,
+          status(500).json({ error: "Error in creating an user in database" });
+      });
+  } else {
+    res
+      .status(400)
+      .json({ message: "Please provide name and bio for the user." });
+  }
 });
 
 const port = 3000;
