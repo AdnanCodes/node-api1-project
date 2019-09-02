@@ -79,5 +79,31 @@ server.post("/api/users", (req, res) => {
   }
 });
 
+//Update user
+
+server.put("/api/users/:id", (req, res) => {
+  const { name, bio } = req.body;
+
+  if (name || bio) {
+    DataBase.update(req.params.id, req.body)
+      .then(user => {
+        if (user) {
+          res.status(200).json(user);
+        } else {
+          res
+            .status(404)
+            .json({ message: "The user doesn't exist with that ID" });
+        }
+      })
+      .catch(() => {
+        res.status(500).json({ error: "The user couldn't be updated" });
+      });
+  } else {
+    res
+      .status(400)
+      .json({ message: "Please provide name and bio for the user" });
+  }
+});
+
 const port = 3000;
 server.listen(port, () => console.log(`API listening on port ${port}`));
