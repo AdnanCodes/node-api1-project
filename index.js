@@ -37,5 +37,24 @@ server.get("/api/users/:id", (req, res) => {
       res.status(500).json({ message: `Server had issue sending the info` });
     });
 });
+
+//Delete user by id
+
+server.delete("/api/users/:id", (req, res) => {
+  DataBase.remove(req.params.id)
+    .then(records => {
+      if (records > 0) {
+        res.status(200).json({ message: "The user has been deleted" });
+      } else {
+        res
+          .status(404)
+          .json({ message: "The user with that ID doesn't exist" });
+      }
+    })
+    .catch(() => {
+      res.status(500).json({ message: "Server had an error trying to delete" });
+    });
+});
+
 const port = 3000;
 server.listen(port, () => console.log(`API listening on port ${port}`));
